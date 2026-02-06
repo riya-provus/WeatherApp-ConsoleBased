@@ -27,7 +27,7 @@ function displayCurrent(data) {
 
 function forecastdisplay(data) {
     console.log("\n*** FORECAST ***");
-    data.forecast.forecastday.map(single => {
+    data.forecast.forecastday.forEach(single => {
         console.log(`${single.date} -> ${single.day.avgtemp_c}°C -> ${single.day.condition.text}`);
     });
 }
@@ -93,7 +93,6 @@ async function askquestion(que) {
     })
 }
 
-
 async function getdata(domain){
         try{
             if(!mapdata[domain]) {
@@ -136,21 +135,21 @@ async function getdata(domain){
         }
 }
 
-async function start() {    
-    console.log("Enter the domain to get the info(Choice number)");
-    console.log("1.Current weather\n2.Forecast\n3.History\n4.Alerts\n5.Future");
-    try{
-        const domain=await askquestion("Enter your domain choice");
-        await getdata(domain);   
-        console.log("Application ended successfully");
-        
-    }catch(err){
-        console.log(err);        
-    }finally{
-        r1.close();
-    }    
+async function start() {  
+    let ch;  
+    do{
+        console.log("Enter the domain to get the info(Choice number)");
+        console.log("1.Current weather\n2.Forecast\n3.History\n4.Alerts\n5.Future");
+        try{
+            const domain=await askquestion("Enter your domain choice");
+            await getdata(domain);       
+        }catch(err){
+            console.log(err);        
+        }      
+        ch=await askquestion("Do u want to continue ? (y or n)");
+    }while(ch!="n");
+    console.log("Application ended successfully");        
+    r1.close();
 }
-    console.log("Hello");
-
 start();
 
