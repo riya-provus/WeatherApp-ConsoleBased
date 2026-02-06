@@ -1,3 +1,5 @@
+
+
 console.log("Weather Application");
 require('dotenv').config();
 
@@ -153,4 +155,3 @@ async function start() {
 }
 
 start();
-
