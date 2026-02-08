@@ -1,5 +1,3 @@
-
-
 console.log("Weather Application");
 require('dotenv').config();
 
@@ -95,6 +93,43 @@ async function askquestion(que) {
     })
 }
 
+async function History_Api(getdomain,city){
+    const dateinfo=await askquestion("Enter the date in format (YYYY-MM-DD) :");
+    const APIwithDate=`https://api.weatherapi.com/v1/${getdomain}.json?key=${APIKEY}&q=${city}&dt=${dateinfo}`;
+    const DateBased=await fetch(APIwithDate);
+    const historydata=await DateBased.json();
+    await choices(getdomain,historydata);
+}
+
+async function Forecast_Api(getdomain,city){
+    const days=await askquestion("Enter the number of days :");
+    const APIwithDay=`https://api.weatherapi.com/v1/${getdomain}.json?key=${APIKEY}&q=${city}&days=${days}`;
+    const daybased=await fetch(APIwithDay);
+    const forecastdata=await daybased.json();
+    await choices(getdomain,forecastdata);
+}
+
+async function Alerts_Api(getdomain,city){
+    const APIwithoutDate=`https://api.weatherapi.com/v1/${getdomain}.json?key=${APIKEY}&q=${city}`;
+    const DomainBased=await fetch(APIwithoutDate);
+    const alertdata=await DomainBased.json();
+    await choices(getdomain,alertdata);
+}
+
+async function Current_Api(getdomain,city){
+    const APIwithoutDate=`https://api.weatherapi.com/v1/${getdomain}.json?key=${APIKEY}&q=${city}`;
+    const DomainBased=await fetch(APIwithoutDate);
+    const currentdata=await DomainBased.json();
+    await choices(getdomain,currentdata);
+}
+
+async function Future_Api(getdomain,city){
+    const dateinfo=await askquestion("Enter the date in format (YYYY-MM-DD) :");
+    const APIwithDate=`https://api.weatherapi.com/v1/${getdomain}.json?key=${APIKEY}&q=${city}&dt=${dateinfo}`;
+    const DateBased=await fetch(APIwithDate);
+    const futuredata=await DateBased.json();
+    await choices(getdomain,futuredata);
+}
 async function getdata(domain){
         try{
             if(!mapdata[domain]) {
@@ -107,30 +142,25 @@ async function getdata(domain){
                 console.log("City name is mandatory");                
                 return;
             }
-            if(getdomain=="history" || getdomain=="future"){                
-                const dateinfo=await askquestion("Enter the date in format (YYYY-MM-DD) :");
-                const APIwithDate=`https://api.weatherapi.com/v1/${getdomain}.json?key=${APIKEY}&q=${city}&dt=${dateinfo}`;
-                const DateBased=await fetch(APIwithDate);
-                if(getdomain=="history"){
-                    const historydata=await DateBased.json();
-                    await choices(getdomain,historydata);
-                }
-                else{
-                    const futuredata=await DateBased.json();
-                    await choices(getdomain,futuredata);
-                }                        
-            }else if(getdomain=="forecast"){
-                const days=await askquestion("Enter the number of days :");
-                const APIwithDay=`https://api.weatherapi.com/v1/${getdomain}.json?key=${APIKEY}&q=${city}&days=${days}`;
-                const daybased=await fetch(APIwithDay);
-                const forecastdata=await daybased.json();
-                await choices(getdomain,forecastdata);
-            }
-            else if(getdomain=="current" || getdomain=="alerts"){             
-                const APIwithoutDate=`https://api.weatherapi.com/v1/${getdomain}.json?key=${APIKEY}&q=${city}`;
-                const DomainBased=await fetch(APIwithoutDate);
-                const currentdata=await DomainBased.json();
-                await choices(getdomain,currentdata);
+            switch(getdomain){
+                case "history":
+                    await History_Api(getdomain,city);
+                    break;
+                case "future":
+                    await Future_Api(getdomain,city);
+                    break;
+                case "forecast":
+                    await Forecast_Api(getdomain,city);
+                    break;
+                case "current":
+                    await Current_Api(getdomain,city);
+                    break;
+                case "alerts":
+                    await Alerts_Api(getdomain,city);
+                    break;
+                default:
+                    console.log("No choice exist");
+                    break;            
             }
         }catch(err){
             console.log(err);            
